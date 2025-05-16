@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-orange-50 flex flex-col z-40 items-center p-4">
   <div class="flex flex-row space-x-6 items-center">
     <div class="bg-white border-gray-300 p-2 rounded-xl shadow-xs">
-      <p>3 PA</p>
+      <p>{{ gameState?.pa || 0 }} PA</p>
     </div>
     <h1 class="text-3xl font-extrabold">Economy</h1>
     <div class="bg-white border-gray-300 p-2 rounded-xl shadow-xs">
@@ -19,7 +19,19 @@
   <div
     class="h-40 rounded-3xl bg-white w-80 mx-10 mt-4 p-3 shadow-xs text-gray-600"
   >
-    Write orders here...
+    <textarea
+      [(ngModel)]="command"
+      class="w-full h-full outline-none"
+      placeholder="Write orders here..."
+    ></textarea>
   </div>
+
+  <button
+    (click)="nextTurn()"
+    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+  >
+    Next Turn
+  </button>
+
   <div class="mt-4" (click)="goToMenu()">Back to menu</div>
 </div>
