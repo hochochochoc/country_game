@@ -25,13 +25,21 @@
       placeholder="Write orders here..."
     ></textarea>
   </div>
-
-  <button
-    (click)="nextTurn()"
-    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-  >
-    Next Turn
-  </button>
+  <div>
+    <button
+      (click)="submitCommand()"
+      [disabled]="isProcessing || !command.trim() || gameState?.pa <= 0"
+      class="absolute bottom-3 right-3 bg-green-500 text-white px-3 py-1 rounded"
+    >
+      Submit
+    </button>
+    <button
+      (click)="nextTurn()"
+      class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Next Turn
+    </button>
+  </div>
 
   <div class="mt-4" (click)="goToMenu()">Back to menu</div>
 </div>

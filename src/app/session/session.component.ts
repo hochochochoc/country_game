@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirebaseService } from '../services/firebase.service';
+import { OpenAIService } from '../services/openai.service';
 
 @Component({
   selector: 'app-session',
@@ -14,10 +15,12 @@ export class SessionComponent implements OnInit {
   gameId: string = '';
   gameState: any = null;
   command: string = '';
+  isProcessing: boolean = false;
 
   constructor(
     private router: Router,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private openAIService: OpenAIService
   ) {}
 
   async ngOnInit() {
@@ -38,20 +41,48 @@ export class SessionComponent implements OnInit {
     }
   }
 
+  async submitCommand() {
+    if (!this.command.trim() || this.isProcessing || !this.gameState) {
+      return;
+    }
+
+    if (this.gameState.pa <= 0) {
+      console.log('No PA points left! Advance to next turn.');
+      return;
+    }
+
+    this.isProcessing = true;
+    console.log('Processing command:', this.command);
+
+    try {
+      // Process command with OpenAI
+      const result = await this.openAIService.processCommand(
+        this.command,
+        this.gameState,
+        this.gameState.commands || []
+      );
+
+      console.log('Command result:', result);
+
+      // Save the command and result to Firebase
+      await this.firebaseService.addCommand(this.gameId, this.command, result);
+
+      // Refresh game state
+      this.gameState = await this.firebaseService.getGameState(this.gameId);
+      this.command = ''; // Clear the command input
+    } catch (error) {
+      console.error('Error processing command:', error);
+    } finally {
+      this.isProcessing = false;
+    }
+  }
+
   async nextTurn() {
     if (!this.gameState) return;
 
-    // Advance date by 3 months
-    const newDate = new Date(this.gameState.currentDate.seconds * 1000);
-    newDate.setMonth(newDate.getMonth() + 3);
-
-    const updates = {
-      currentDate: newDate,
-      pa: 3,
-    };
-
     try {
-      this.gameState = await this.firebaseService.nextTurn(this.gameId);
+      await this.firebaseService.nextTurn(this.gameId);
+      this.gameState = await this.firebaseService.getGameState(this.gameId);
       console.log('Advanced to next turn:', this.gameState);
     } catch (error) {
       console.error('Failed to advance turn');
