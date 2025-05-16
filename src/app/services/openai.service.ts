@@ -162,11 +162,11 @@ Player Command: "${command}"
     const year = new Date(date.seconds * 1000).getFullYear();
 
     const contexts: Record<string, string> = {
-      default: `Yemen in the 1930s was divided, with North Yemen governed by the Mutawakkilite Kingdom under Imam Yahya Muhammad Hamid ed-Din. The South was a British protectorate centered around Aden.`,
+      default: `North Yemen in the 1930s was controlled by the Mutawakkilite Kingdom under Imam Yahya Muhammad Hamid ed-Din. The South was a British protectorate centered around Aden.`,
 
-      1930: `In 1930, Yemen was largely isolated, with Imam Yahya pursuing modernization while maintaining independence. Italy and the UK competed for influence in the Red Sea region.`,
+      1930: `In 1930, Yemen was largely isolated, with Imam Yahya pursuing modernization while maintaining independence. Italy and the UK competed for influence in the Red Sea region. Moderate taxes from tribes, crafted goods from population centers, agriculture and fisheries on the coast were the main economic activities.`,
 
-      1934: `In 1934, Saudi-Yemeni tensions escalated into the Saudi-Yemeni War, resulting in Yemen ceding parts of its northern territories to Saudi Arabia in the Treaty of Taif.`,
+      1934: `In 1934, Saudi-Yemeni tensions escalated into the Saudi-Yemeni War.`,
     };
 
     if (year < 1932) return contexts['1930'] || contexts['default'];
