@@ -42,7 +42,7 @@ export class FirebaseService {
         roundNumber: 1,
         date: new Date(1930, 0, 1),
         pa: 3,
-        economy: 10,
+        economy: 20,
         stability: 20,
         military: 20,
         diplomacy: {
@@ -123,38 +123,48 @@ export class FirebaseService {
       const commands = gameData.commands || [];
       commands.push(commandData);
 
+      // Calculate updated values by adding changes to current values
+      const updatedEconomy =
+        result.changes.economy !== undefined
+          ? gameData.economy + result.changes.economy
+          : gameData.economy;
+
+      const updatedStability =
+        result.changes.stability !== undefined
+          ? gameData.stability + result.changes.stability
+          : gameData.stability;
+
+      const updatedMilitary =
+        result.changes.military !== undefined
+          ? gameData.military + result.changes.military
+          : gameData.military;
+
+      // Calculate updated diplomacy values
+      const updatedDiplomacy = {
+        italy:
+          result.changes.diplomacy?.italy !== undefined
+            ? gameData.diplomacy.italy + result.changes.diplomacy.italy
+            : gameData.diplomacy.italy,
+        uk:
+          result.changes.diplomacy?.uk !== undefined
+            ? gameData.diplomacy.uk + result.changes.diplomacy.uk
+            : gameData.diplomacy.uk,
+        saudi:
+          result.changes.diplomacy?.saudi !== undefined
+            ? gameData.diplomacy.saudi + result.changes.diplomacy.saudi
+            : gameData.diplomacy.saudi,
+      };
+
       // Update round document
       await setDoc(
         roundRef,
         {
           pa: updatedPA,
           commands,
-          economy:
-            result.changes.economy !== undefined
-              ? result.changes.economy
-              : gameData.economy,
-          stability:
-            result.changes.stability !== undefined
-              ? result.changes.stability
-              : gameData.stability,
-          military:
-            result.changes.military !== undefined
-              ? result.changes.military
-              : gameData.military,
-          diplomacy: {
-            italy:
-              result.changes.diplomacy?.italy !== undefined
-                ? result.changes.diplomacy.italy
-                : gameData.diplomacy.italy,
-            uk:
-              result.changes.diplomacy?.uk !== undefined
-                ? result.changes.diplomacy.uk
-                : gameData.diplomacy.uk,
-            saudi:
-              result.changes.diplomacy?.saudi !== undefined
-                ? result.changes.diplomacy.saudi
-                : gameData.diplomacy.saudi,
-          },
+          economy: updatedEconomy,
+          stability: updatedStability,
+          military: updatedMilitary,
+          diplomacy: updatedDiplomacy,
         },
         { merge: true }
       );

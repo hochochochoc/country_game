@@ -74,7 +74,15 @@ export class OpenAIService {
           {
             role: 'system',
             content: `You are an AI simulating Yemen's historical development from 1930 to 1936. 
-            Evaluate player commands and determine outcomes based on historical accuracy and game state.
+            Evaluate player commands and determine outcomes based on general historical context and most importantly game state.
+             
+            IMPORTANT: ALL stats are between 0 and 100. and represent development levels, not resources. They are not expended but can be impacted by decisions and events. While the economy is humble, the player should be allowed to make moderate investments and improvements, like infrastructure projects, buying military equipment. For reference, in the beginning at max a fleet of cars. The economy stat does not symbolize a budget, simply the state of the economy, but does influence how large expenses can be, so as it grows larger projects become possible. Unsuccessful acquisitions or projects should not be penalized with a loss of economy points, except when extreme failure makes this reasonable. There should be less permissiveness for social reforms reflecting the traditional, tribal and decentralized society. As stability and authority increase there should be more likelihood of this increasing. 
+
+            For each player command:
+            1. Determine probabilities for four possible outcomes (Excellent, Moderate Success, Failure, Catastrophic Failure).
+            2. Randomly select ONE outcome based on these probabilities.
+            3. Generate appropriate description and stat changes for the selected outcome.
+
             Respond with a JSON object only containing: 
             {
               "result": "Excellent|Moderate Success|Failure|Catastrophic Failure",
@@ -162,9 +170,9 @@ Player Command: "${command}"
     const year = new Date(date.seconds * 1000).getFullYear();
 
     const contexts: Record<string, string> = {
-      default: `North Yemen in the 1930s was controlled by the Mutawakkilite Kingdom under Imam Yahya Muhammad Hamid ed-Din. The South was a British protectorate centered around Aden.`,
+      default: `Only North Yemen in the 1930s was controlled by the Mutawakkilite Kingdom under Imam Yahya Muhammad Hamid ed-Din. The South was a British protectorate centered around Aden.`,
 
-      1930: `In 1930, Yemen was largely isolated, with Imam Yahya pursuing modernization while maintaining independence. Italy and the UK competed for influence in the Red Sea region. Moderate taxes from tribes, crafted goods from population centers, agriculture and fisheries on the coast were the main economic activities.`,
+      1930: `In 1930, Yemen was largely isolated, with Imam Yahya pursuing modernization while maintaining independence and consolidating power over the tribes. Italy and the UK competed for influence in the Red Sea region. Moderate taxes from tribes, crafted goods from population centers, agriculture and fisheries on the coast were the main economic activities, providing the government with funds to make moderate investments and acquisitions and start projects.`,
 
       1934: `In 1934, Saudi-Yemeni tensions escalated into the Saudi-Yemeni War.`,
     };
