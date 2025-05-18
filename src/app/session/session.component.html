@@ -48,9 +48,88 @@
       }}</span>
     </div>
   </div>
+
   <div
-    class="h-76 rounded-3xl bg-gray-200 flex items-center justify-center font-bold text-lg w-80 mx-10"
-  ></div>
+    class="h-76 rounded-3xl bg-gray-200/30 w-80 mx-10 p-4 overflow-y-auto flex flex-col"
+  >
+    <div *ngIf="getLastCommand()" class="flex-grow">
+      <p class="font-bold mb-2">
+        {{ getLastCommand()?.result }}
+      </p>
+      <p class="mb-4">{{ getLastCommand()?.outcome }}</p>
+
+      <div class="text-sm">
+        <p
+          *ngIf="getLastCommand()?.changes?.economy"
+          [ngClass]="
+            getLastCommand()?.changes?.economy > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.economy > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.economy }} Economy
+        </p>
+        <p
+          *ngIf="getLastCommand()?.changes?.stability"
+          [ngClass]="
+            getLastCommand()?.changes?.stability > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.stability > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.stability }} Stability
+        </p>
+        <p
+          *ngIf="getLastCommand()?.changes?.military"
+          [ngClass]="
+            getLastCommand()?.changes?.military > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.military > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.military }} Military
+        </p>
+
+        <p
+          *ngIf="getLastCommand()?.changes?.diplomacy?.italy"
+          [ngClass]="
+            getLastCommand()?.changes?.diplomacy?.italy > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.diplomacy?.italy > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.diplomacy?.italy }} Italy
+        </p>
+        <p
+          *ngIf="getLastCommand()?.changes?.diplomacy?.uk"
+          [ngClass]="
+            getLastCommand()?.changes?.diplomacy?.uk > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.diplomacy?.uk > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.diplomacy?.uk }} UK
+        </p>
+        <p
+          *ngIf="getLastCommand()?.changes?.diplomacy?.saudi"
+          [ngClass]="
+            getLastCommand()?.changes?.diplomacy?.saudi > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          "
+        >
+          {{ getLastCommand()?.changes?.diplomacy?.saudi > 0 ? "+" : ""
+          }}{{ getLastCommand()?.changes?.diplomacy?.saudi }} Saudi
+        </p>
+      </div>
+    </div>
+  </div>
+
   <div
     class="h-40 rounded-xl bg-white w-80 mx-10 mt-4 p-3 shadow-xs text-gray-600"
   >
@@ -64,13 +143,13 @@
     <button
       (click)="submitCommand()"
       [disabled]="isProcessing || !command.trim() || gameState?.pa <= 0"
-      class="absolute bottom-22 px-3 py-1.5 right-9 bg-orange-700 text-white rounded-lg"
+      class="absolute bottom-22 px-3 py-1.5 right-9 bg-orange-900/90 text-white rounded-lg"
     >
       <fa-icon [icon]="faArrowUp" class="h-4"></fa-icon>
     </button>
     <button
       (click)="nextTurn()"
-      class="mt-2 bg-orange-900 text-white px-4 py-2 rounded"
+      class="mt-4 bg-orange-900/95 text-white px-4 py-2 rounded"
     >
       Next Turn
     </button>

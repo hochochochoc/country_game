@@ -87,6 +87,13 @@ export class SessionComponent implements OnInit {
     return 'Diplomacy';
   }
 
+  getLastCommand(): any {
+    if (!this.gameState?.commands || this.gameState.commands.length === 0) {
+      return null;
+    }
+    return this.gameState.commands[this.gameState.commands.length - 1];
+  }
+
   async submitCommand() {
     if (!this.command.trim() || this.isProcessing || !this.gameState) {
       return;
