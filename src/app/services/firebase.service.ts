@@ -12,11 +12,13 @@ import {
   orderBy,
   DocumentData,
   Timestamp,
+  limit,
 } from 'firebase/firestore';
 import { environment } from '../../environments/environment';
 
 export interface GameSummary {
   id: string;
+  gameNumber: number;
   createdAt: Date;
   currentDate: Date;
   currentRound: number;
@@ -35,8 +37,12 @@ export class FirebaseService {
 
   async createGame(): Promise<string> {
     try {
-      // Create game document with initial metadata
+      // Get the highest game number so far
+      const nextGameNumber = await this.getNextGameNumber();
+
+      // Create game document with initial metadata and game number
       const gameData = {
+        gameNumber: nextGameNumber,
         createdAt: new Date(),
         currentDate: new Date(1930, 0, 1),
         currentRound: 1,
@@ -63,11 +69,35 @@ export class FirebaseService {
 
       await setDoc(doc(this.db, `games/${gameId}/rounds/1`), initialRound);
 
-      console.log('New game created with ID:', gameId);
+      console.log(
+        'New game created with ID:',
+        gameId,
+        'and number:',
+        nextGameNumber
+      );
       return gameId;
     } catch (error) {
       console.error('Error creating game:', error);
       throw error;
+    }
+  }
+
+  private async getNextGameNumber(): Promise<number> {
+    try {
+      // Query to get the game with the highest number
+      const gamesRef = collection(this.db, 'games');
+      const q = query(gamesRef, orderBy('gameNumber', 'desc'), limit(1));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        return 1; // First game
+      }
+
+      const highestGame = querySnapshot.docs[0].data();
+      return (highestGame['gameNumber'] || 0) + 1;
+    } catch (error) {
+      console.error('Error getting next game number:', error);
+      return 1; // Default to 1 if there's an error
     }
   }
 
@@ -83,6 +113,7 @@ export class FirebaseService {
         const data = doc.data();
         games.push({
           id: doc.id,
+          gameNumber: data['gameNumber'] || 0,
           createdAt: data['createdAt instanceof Timestamp']
             ? data['createdAt.toDate()']
             : data['createdAt'],

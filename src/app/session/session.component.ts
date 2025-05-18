@@ -44,6 +44,24 @@ export class SessionComponent implements OnInit {
     }
   }
 
+  formatDate(date: any): string {
+    if (!date) return 'Unknown date';
+
+    const dateObj =
+      date instanceof Date
+        ? date
+        : date.toDate
+        ? date.toDate()
+        : date.seconds
+        ? new Date(date.seconds * 1000)
+        : new Date(date);
+
+    return dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+    });
+  }
+
   async submitCommand() {
     if (!this.command.trim() || this.isProcessing || !this.gameState) {
       return;

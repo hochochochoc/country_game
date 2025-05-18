@@ -12,12 +12,12 @@
   <!-- Saved games list -->
   <div *ngIf="!isLoading && savedGames.length > 0" class="w-full max-w-md">
     <div
-      *ngFor="let game of savedGames; let i = index"
+      *ngFor="let game of savedGames"
       class="bg-white rounded-lg shadow-md p-4 mb-3 hover:bg-gray-50 cursor-pointer"
       (click)="loadGame(game.id)"
     >
       <div>
-        <p class="font-medium">Game {{ i + 1 }}</p>
+        <p class="font-medium">Game {{ game.gameNumber }}</p>
         <p class="text-sm text-gray-600">Round: {{ game.currentRound }}</p>
         <p class="text-sm text-gray-600">
           Game Date: {{ formatDate(game.currentDate) }}
