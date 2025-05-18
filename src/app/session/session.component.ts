@@ -4,14 +4,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirebaseService } from '../services/firebase.service';
 import { OpenAIService } from '../services/openai.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-session',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './session.component.html',
 })
 export class SessionComponent implements OnInit {
+  faArrowUp = faArrowUp;
   gameId: string = '';
   gameState: any = null;
   command: string = '';

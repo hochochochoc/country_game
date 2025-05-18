@@ -15,9 +15,9 @@
     <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
     <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
   </div>
-  <div class="h-80 rounded-3xl bg-gray-200 w-80 mx-10"></div>
+  <div class="h-76 rounded-3xl bg-gray-200 w-80 mx-10"></div>
   <div
-    class="h-40 rounded-3xl bg-white w-80 mx-10 mt-4 p-3 shadow-xs text-gray-600"
+    class="h-40 rounded-xl bg-white w-80 mx-10 mt-4 p-3 shadow-xs text-gray-600"
   >
     <textarea
       [(ngModel)]="command"
@@ -29,17 +29,15 @@
     <button
       (click)="submitCommand()"
       [disabled]="isProcessing || !command.trim() || gameState?.pa <= 0"
-      class="absolute bottom-3 right-3 bg-green-500 text-white px-3 py-1 rounded"
+      class="absolute bottom-22 px-3 py-1.5 right-9 bg-orange-700 text-white rounded-lg"
     >
-      Submit
+      <fa-icon [icon]="faArrowUp" class="h-4"></fa-icon>
     </button>
     <button
       (click)="nextTurn()"
-      class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+      class="mt-4 bg-orange-900 text-white px-4 py-2 rounded"
     >
       Next Turn
     </button>
   </div>
-
-  <div class="mt-4" (click)="goToMenu()">Back to menu</div>
 </div>
