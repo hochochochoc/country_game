@@ -47,6 +47,7 @@ export class SessionComponent implements OnInit {
   formatDate(date: any): string {
     if (!date) return 'Unknown date';
 
+    // Convert Firestore Timestamp to Date if needed
     const dateObj =
       date instanceof Date
         ? date
@@ -60,6 +61,30 @@ export class SessionComponent implements OnInit {
       year: 'numeric',
       month: 'short',
     });
+  }
+
+  getLowestDiplomacyValue(): number {
+    if (!this.gameState?.diplomacy) return 0;
+
+    const diplomacy = this.gameState.diplomacy;
+    return Math.min(
+      diplomacy.italy || 0,
+      diplomacy.uk || 0,
+      diplomacy.saudi || 0
+    );
+  }
+
+  getLowestDiplomacyCountry(): string {
+    if (!this.gameState?.diplomacy) return 'Diplomacy';
+
+    const diplomacy = this.gameState.diplomacy;
+    const minValue = this.getLowestDiplomacyValue();
+
+    if (diplomacy.italy === minValue) return 'Italy';
+    if (diplomacy.uk === minValue) return 'UK';
+    if (diplomacy.saudi === minValue) return 'Saudi';
+
+    return 'Diplomacy';
   }
 
   async submitCommand() {

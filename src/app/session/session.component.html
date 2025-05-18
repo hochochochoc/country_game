@@ -10,12 +10,47 @@
   </div>
 
   <div class="flex flex-row">
-    <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
-    <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
-    <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
-    <div class="h-14 rounded-full bg-gray-200 w-14 m-3"></div>
+    <div class="flex flex-col items-center">
+      <div
+        class="h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-lg w-12 mt-2 mb-1 mx-4"
+      >
+        {{ gameState?.economy || 0 }}
+      </div>
+      <span class="text-xs mb-2 font-semibold">Econ</span>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div
+        class="h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-lg w-12 mt-2 mb-1 mx-4"
+      >
+        {{ gameState?.stability || 0 }}
+      </div>
+      <span class="text-xs mb-2 font-semibold">Stab</span>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div
+        class="h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-lg w-12 mt-2 mb-1 mx-4"
+      >
+        {{ gameState?.military || 0 }}
+      </div>
+      <span class="text-xs mb-2 font-semibold">Mil</span>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div
+        class="h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-lg w-12 mt-2 mb-1 mx-4"
+      >
+        {{ getLowestDiplomacyValue() }}
+      </div>
+      <span class="text-xs mb-2 font-semibold">{{
+        getLowestDiplomacyCountry()
+      }}</span>
+    </div>
   </div>
-  <div class="h-76 rounded-3xl bg-gray-200 w-80 mx-10"></div>
+  <div
+    class="h-76 rounded-3xl bg-gray-200 flex items-center justify-center font-bold text-lg w-80 mx-10"
+  ></div>
   <div
     class="h-40 rounded-xl bg-white w-80 mx-10 mt-4 p-3 shadow-xs text-gray-600"
   >
@@ -35,7 +70,7 @@
     </button>
     <button
       (click)="nextTurn()"
-      class="mt-4 bg-orange-900 text-white px-4 py-2 rounded"
+      class="mt-2 bg-orange-900 text-white px-4 py-2 rounded"
     >
       Next Turn
     </button>
