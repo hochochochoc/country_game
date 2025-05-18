@@ -11,8 +11,16 @@ import {
   query,
   orderBy,
   DocumentData,
+  Timestamp,
 } from 'firebase/firestore';
 import { environment } from '../../environments/environment';
+
+export interface GameSummary {
+  id: string;
+  createdAt: Date;
+  currentDate: Date;
+  currentRound: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +67,35 @@ export class FirebaseService {
       return gameId;
     } catch (error) {
       console.error('Error creating game:', error);
+      throw error;
+    }
+  }
+
+  async getAllGames(): Promise<GameSummary[]> {
+    try {
+      const gamesRef = collection(this.db, 'games');
+      const q = query(gamesRef, orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+
+      const games: GameSummary[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        games.push({
+          id: doc.id,
+          createdAt: data['createdAt instanceof Timestamp']
+            ? data['createdAt.toDate()']
+            : data['createdAt'],
+          currentDate: data['currentDate instanceof Timestamp']
+            ? data['currentDate.toDate()']
+            : data['currentDate'],
+          currentRound: data['currentRound'],
+        });
+      });
+
+      return games;
+    } catch (error) {
+      console.error('Error getting games:', error);
       throw error;
     }
   }
