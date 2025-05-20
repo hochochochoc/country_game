@@ -1,6 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 
+// Only run in Vercel environment
+if (!process.env.VERCEL) {
+  console.log(
+    "Not in Vercel environment, skipping environment file generation"
+  );
+  process.exit(0);
+}
+
 // Get environment variables from Vercel
 const firebaseApiKey = process.env.FIREBASE_API_KEY || "";
 const firebaseAuthDomain = process.env.FIREBASE_AUTH_DOMAIN || "";
@@ -15,20 +23,20 @@ const openaiModel = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
 // Create environment file content
 const envFileContent = `export const environment = {
-  production: true,
-  firebase: {
-    apiKey: '${firebaseApiKey}',
-    authDomain: '${firebaseAuthDomain}',
-    projectId: '${firebaseProjectId}',
-    storageBucket: '${firebaseStorageBucket}',
-    messagingSenderId: '${firebaseMessagingSenderId}',
-    appId: '${firebaseAppId}',
-    measurementId: '${firebaseMeasurementId}',
-  },
-  openai: {
-    apiKey: '${openaiApiKey}',
-    model: '${openaiModel}',
-  },
+ production: true,
+ firebase: {
+   apiKey: '${firebaseApiKey}',
+   authDomain: '${firebaseAuthDomain}',
+   projectId: '${firebaseProjectId}',
+   storageBucket: '${firebaseStorageBucket}',
+   messagingSenderId: '${firebaseMessagingSenderId}',
+   appId: '${firebaseAppId}',
+   measurementId: '${firebaseMeasurementId}',
+ },
+ openai: {
+   apiKey: '${openaiApiKey}',
+   model: '${openaiModel}',
+ },
 };`;
 
 // Ensure directory exists
