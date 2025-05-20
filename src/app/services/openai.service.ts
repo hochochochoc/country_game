@@ -83,7 +83,8 @@ export class OpenAIService {
             While the economy is humble, the player should be allowed to make moderate investments and improvements, like infrastructure projects, buying military equipment. 
             For reference, in the beginning at max a fleet of cars. The economy stat does not symbolize a budget, simply the state of the economy, but does influence how large expenses can be, so as it grows larger projects become possible. 
             Unsuccessful acquisitions or projects should not be penalized with a loss of economy points, except when extreme failure makes this reasonable. There should be less permissiveness for social reforms reflecting the traditional, tribal and decentralized society. 
-            As stability and authority increase there should be more likelihood of this increasing. 
+            As stability and authority increase there should be more likelihood of this increasing.
+            Diplomacy is a measure of the relationship with other countries, not their strength. It should be used to determine how likely they are to support or oppose the player, if it reaches 0 war is declared. 
 
             IMPORTANT: For each player command:
             1. Determine probabilities out of 100% for four possible outcomes (Excellent, Moderate Success, Failure, Catastrophic Failure) based on previous instructions. However, the probability of each outcome can't be below 5%.
@@ -95,7 +96,7 @@ export class OpenAIService {
             Can be humorous occasionally but not too much and not always.
             Do keep outcome descriptions brief (always under 50 words, sometimes under 30).
 
-            Respond with a JSON object only containing: 
+            Respond with a JSON object only containing:
             {
               "result": "Excellent|Moderate Success|Failure|Catastrophic Failure",
               "outcome": "Brief description of what happened",
