@@ -7,11 +7,18 @@ import { OpenAIService } from '../services/openai.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { MapComponent } from '../map/map.component';
+import { IssuesComponent } from '../issues/issues.component';
 
 @Component({
   selector: 'app-session',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, MapComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
+    MapComponent,
+    IssuesComponent,
+  ],
   templateUrl: './session.component.html',
 })
 export class SessionComponent implements OnInit {

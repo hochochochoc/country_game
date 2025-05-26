@@ -76,6 +76,17 @@
       >
         🗺️
       </button>
+      <button
+        (click)="setActiveTab('issues')"
+        [class]="
+          activeTab === 'issues'
+            ? 'bg-orange-700 text-white'
+            : 'bg-white text-gray-600'
+        "
+        class="w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"
+      >
+        📋
+      </button>
     </div>
 
     <!-- Messages tab content -->
@@ -162,6 +173,12 @@
       class="flex-grow flex items-center justify-center"
     >
       <app-map></app-map>
+    </div>
+    <div
+      *ngIf="activeTab === 'issues'"
+      class="flex-grow flex items-center justify-center"
+    >
+      <app-issues></app-issues>
     </div>
   </div>
 
