@@ -21,7 +21,7 @@ interface HexTerritories {
   selector: 'app-map',
   standalone: true,
   template:
-    '<canvas #canvas width="560" height="360" class="w-full h-full"></canvas>',
+    '<canvas #canvas width="560" height="480" class="w-full h-full rounded-2xl border border-black"></canvas>',
 })
 export class MapComponent implements AfterViewInit {
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
