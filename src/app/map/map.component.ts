@@ -21,7 +21,8 @@ interface HexTerritories {
   selector: 'app-map',
   standalone: true,
   template: `<div
-    class="relative w-full h-full bg-white rounded-lg overflow-hidden"
+    class="relative w-full bg-white rounded-lg overflow-hidden"
+    style="height: 250px;"
   >
     <canvas
       #canvas
