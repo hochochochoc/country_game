@@ -50,10 +50,10 @@
   </div>
 
   <div
-    class="h-76 rounded-xl bg-gray-200/30 w-80 mx-10 p-4 overflow-y-auto flex flex-col"
+    class="h-84 rounded-xl bg-gray-200/30 w-80 mx-10 p-4 overflow-y-auto flex flex-col"
   >
     <!-- Menu buttons -->
-    <div class="flex justify-center mb-3 space-x-3">
+    <div class="flex justify-left mb-3 space-x-3">
       <button
         (click)="setActiveTab('messages')"
         [class]="
@@ -161,7 +161,7 @@
       *ngIf="activeTab === 'map'"
       class="flex-grow flex items-center justify-center"
     >
-      <p class="text-gray-500">Map view</p>
+      <app-map></app-map>
     </div>
   </div>
 
@@ -178,7 +178,7 @@
     <button
       (click)="gameState?.pa > 0 ? submitCommand() : nextTurn()"
       [disabled]="gameState?.pa > 0 && (isProcessing || !command.trim())"
-      class="absolute bottom-22 px-3 py-1.5 right-9 bg-orange-900/90 text-white rounded-lg"
+      class="absolute bottom-14 px-3 py-1.5 right-9 bg-orange-900/90 text-white rounded-lg"
     >
       <fa-icon
         *ngIf="gameState?.pa > 0"

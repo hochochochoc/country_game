@@ -6,11 +6,12 @@ import { FirebaseService } from '../services/firebase.service';
 import { OpenAIService } from '../services/openai.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-session',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, MapComponent],
   templateUrl: './session.component.html',
 })
 export class SessionComponent implements OnInit {
@@ -19,7 +20,7 @@ export class SessionComponent implements OnInit {
   gameState: any = null;
   command: string = '';
   isProcessing: boolean = false;
-  activeTab: string = 'messages';
+  activeTab: string = 'map';
 
   constructor(
     private router: Router,
