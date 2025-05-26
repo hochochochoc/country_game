@@ -52,7 +52,34 @@
   <div
     class="h-76 rounded-xl bg-gray-200/30 w-80 mx-10 p-4 overflow-y-auto flex flex-col"
   >
-    <div *ngIf="getLastCommand()" class="flex-grow">
+    <!-- Menu buttons -->
+    <div class="flex justify-left mb-3 space-x-3">
+      <button
+        (click)="setActiveTab('messages')"
+        [class]="
+          activeTab === 'messages'
+            ? 'bg-orange-700 text-white'
+            : 'bg-white text-gray-600'
+        "
+        class="w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"
+      >
+        💬
+      </button>
+      <button
+        (click)="setActiveTab('map')"
+        [class]="
+          activeTab === 'map'
+            ? 'bg-orange-700 text-white'
+            : 'bg-white text-gray-600'
+        "
+        class="w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"
+      >
+        🗺️
+      </button>
+    </div>
+
+    <!-- Messages tab content -->
+    <div *ngIf="activeTab === 'messages' && getLastCommand()" class="flex-grow">
       <p class="font-bold mb-2">
         {{ getLastCommand()?.result }}
       </p>
@@ -127,6 +154,14 @@
           }}{{ getLastCommand()?.changes?.diplomacy?.saudi }} Saudi
         </p>
       </div>
+    </div>
+
+    <!-- Map tab content -->
+    <div
+      *ngIf="activeTab === 'map'"
+      class="flex-grow flex items-center justify-center"
+    >
+      <p class="text-gray-500">Map view coming soon...</p>
     </div>
   </div>
 

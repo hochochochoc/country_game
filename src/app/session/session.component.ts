@@ -19,6 +19,7 @@ export class SessionComponent implements OnInit {
   gameState: any = null;
   command: string = '';
   isProcessing: boolean = false;
+  activeTab: string = 'messages';
 
   constructor(
     private router: Router,
@@ -144,5 +145,9 @@ export class SessionComponent implements OnInit {
 
   goToMenu() {
     this.router.navigate(['/menu']);
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 }
