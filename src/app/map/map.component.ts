@@ -20,8 +20,15 @@ interface HexTerritories {
 @Component({
   selector: 'app-map',
   standalone: true,
-  template:
-    '<canvas #canvas width="560" height="480" class="w-full h-full rounded-2xl border border-black"></canvas>',
+  template: `<div
+    class="relative w-full h-full bg-white rounded-lg overflow-hidden"
+  >
+    <canvas
+      #canvas
+      class="w-full h-full cursor-pointer"
+      (click)="onCanvasClick($event)"
+    ></canvas>
+  </div>`,
 })
 export class MapComponent implements AfterViewInit {
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
@@ -132,13 +139,41 @@ export class MapComponent implements AfterViewInit {
   isDragging = false;
   lastMouseX = 0;
   lastMouseY = 0;
+  private backgroundImage: HTMLImageElement | null = null;
 
   ngAfterViewInit() {
+    if (!this.canvas?.nativeElement) {
+      console.error('Canvas element not found');
+      return;
+    }
+
     const canvas = this.canvas.nativeElement;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    this.draw();
+    const devicePixelRatio = window.devicePixelRatio || 1;
+
+    // Set canvas size accounting for device pixel ratio
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+
+    // Scale the canvas back down using CSS
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+
+    // Scale the drawing context to match device pixel ratio
+    const ctx = canvas.getContext('2d')!;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    // Pre-load the background image
+    this.backgroundImage = new Image();
+    this.backgroundImage.onload = () => {
+      this.draw();
+    };
+    this.backgroundImage.src = '/yemen.png';
+  }
+
+  onCanvasClick(event: MouseEvent) {
+    // Handle canvas click events here
+    console.log('Canvas clicked at:', event.offsetX, event.offsetY);
   }
 
   @HostListener('wheel', ['$event'])
@@ -162,8 +197,15 @@ export class MapComponent implements AfterViewInit {
     if (this.isDragging) {
       const deltaX = event.clientX - this.lastMouseX;
       const deltaY = event.clientY - this.lastMouseY;
-      this.offsetX += deltaX;
-      this.offsetY += deltaY;
+
+      // Calculate new offsets with bounds checking
+      const newOffsetX = this.offsetX + deltaX;
+      const newOffsetY = this.offsetY + deltaY;
+
+      // Apply bounds constraints
+      this.offsetX = this.constrainOffset(newOffsetX, 472, 'x');
+      this.offsetY = this.constrainOffset(newOffsetY, 267, 'y');
+
       this.lastMouseX = event.clientX;
       this.lastMouseY = event.clientY;
       this.draw();
@@ -191,8 +233,15 @@ export class MapComponent implements AfterViewInit {
     if (event.touches.length === 1 && this.isDragging) {
       const deltaX = event.touches[0].clientX - this.lastMouseX;
       const deltaY = event.touches[0].clientY - this.lastMouseY;
-      this.offsetX += deltaX;
-      this.offsetY += deltaY;
+
+      // Calculate new offsets with bounds checking
+      const newOffsetX = this.offsetX + deltaX;
+      const newOffsetY = this.offsetY + deltaY;
+
+      // Apply bounds constraints
+      this.offsetX = this.constrainOffset(newOffsetX, 472, 'x');
+      this.offsetY = this.constrainOffset(newOffsetY, 267, 'y');
+
       this.lastMouseX = event.touches[0].clientX;
       this.lastMouseY = event.touches[0].clientY;
       this.draw();
@@ -220,6 +269,32 @@ export class MapComponent implements AfterViewInit {
     return Math.sqrt(dx * dx + dy * dy);
   }
 
+  private constrainOffset(
+    offset: number,
+    imageSize: number,
+    axis: 'x' | 'y'
+  ): number {
+    if (!this.canvas?.nativeElement) return offset;
+
+    const canvasSize =
+      axis === 'x'
+        ? this.canvas.nativeElement.getBoundingClientRect().width
+        : this.canvas.nativeElement.getBoundingClientRect().height;
+
+    const scaledImageSize = imageSize * this.zoom;
+
+    // If image is smaller than canvas, center it
+    if (scaledImageSize <= canvasSize) {
+      return (canvasSize - scaledImageSize) / 2 / this.zoom;
+    }
+
+    // If image is larger than canvas, constrain to bounds
+    const maxOffset = 0; // Right/bottom edge
+    const minOffset = (canvasSize - scaledImageSize) / this.zoom; // Left/top edge
+
+    return Math.max(minOffset, Math.min(maxOffset, offset));
+  }
+
   hexToPixel(q: number, r: number): { x: number; y: number } {
     const x =
       (290 +
@@ -231,22 +306,24 @@ export class MapComponent implements AfterViewInit {
   }
 
   draw() {
-    const ctx = this.canvas.nativeElement.getContext('2d')!;
-    ctx.clearRect(0, 0, 560, 360);
+    if (!this.canvas?.nativeElement) return;
 
-    // Draw background image
-    const img = new Image();
-    img.onload = () => {
+    const ctx = this.canvas.nativeElement.getContext('2d')!;
+    const rect = this.canvas.nativeElement.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+
+    // Draw background image if loaded
+    if (this.backgroundImage && this.backgroundImage.complete) {
       ctx.drawImage(
-        img,
+        this.backgroundImage,
         this.offsetX * this.zoom,
         this.offsetY * this.zoom,
         472 * this.zoom,
         267 * this.zoom
       );
-      this.drawHexes(ctx);
-    };
-    img.src = '/yemen.png';
+    }
+
+    this.drawHexes(ctx);
   }
 
   drawHexes(ctx: CanvasRenderingContext2D) {
