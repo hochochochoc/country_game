@@ -53,7 +53,7 @@
     class="h-76 rounded-xl bg-gray-200/30 w-80 mx-10 p-4 overflow-y-auto flex flex-col"
   >
     <!-- Menu buttons -->
-    <div class="flex justify-left mb-3 space-x-3">
+    <div class="flex justify-center mb-3 space-x-3">
       <button
         (click)="setActiveTab('messages')"
         [class]="
@@ -161,7 +161,7 @@
       *ngIf="activeTab === 'map'"
       class="flex-grow flex items-center justify-center"
     >
-      <p class="text-gray-500">Map view coming soon...</p>
+      <p class="text-gray-500">Map view</p>
     </div>
   </div>
 
@@ -176,17 +176,16 @@
   </div>
   <div>
     <button
-      (click)="submitCommand()"
-      [disabled]="isProcessing || !command.trim() || gameState?.pa <= 0"
+      (click)="gameState?.pa > 0 ? submitCommand() : nextTurn()"
+      [disabled]="gameState?.pa > 0 && (isProcessing || !command.trim())"
       class="absolute bottom-22 px-3 py-1.5 right-9 bg-orange-900/90 text-white rounded-lg"
     >
-      <fa-icon [icon]="faArrowUp" class="h-4"></fa-icon>
-    </button>
-    <button
-      (click)="nextTurn()"
-      class="mt-4 bg-orange-900/95 text-white px-4 py-2 rounded"
-    >
-      Next Turn
+      <fa-icon
+        *ngIf="gameState?.pa > 0"
+        [icon]="faArrowUp"
+        class="h-4"
+      ></fa-icon>
+      <span *ngIf="gameState?.pa <= 0" class="text-md">Next Turn</span>
     </button>
   </div>
 </div>
