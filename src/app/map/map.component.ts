@@ -45,6 +45,7 @@ export class MapComponent implements AfterViewInit {
     { r: -3, q: -2, owner: 'northYemen' },
     { r: -3, q: -1, owner: 'northYemen' },
 
+    { r: -2, q: -6, owner: 'northYemen' },
     { r: -2, q: -5, owner: 'northYemen' },
     { r: -2, q: -4, owner: 'northYemen', name: 'Sanaa' },
     { r: -2, q: -3, owner: 'northYemen' },
@@ -110,6 +111,7 @@ export class MapComponent implements AfterViewInit {
 
     { r: 2, q: -6, owner: 'uk' },
     { r: 2, q: -5, owner: 'uk', name: 'Aden' },
+    { r: 2, q: 5, owner: 'uk', name: 'Socotra' },
 
     // Saudi territories
     { r: -8, q: -3, owner: 'saudi', name: 'Bisha' },
