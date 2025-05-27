@@ -6,15 +6,12 @@ import {
   HostListener,
 } from '@angular/core';
 
-interface Hex {
+interface GameHex {
   q: number;
   r: number;
-}
-
-interface HexTerritories {
-  northYemen: Hex[];
-  uk: Hex[];
-  saudi: Hex[];
+  owner: 'northYemen' | 'uk' | 'saudi' | 'neutral';
+  terrain?: 'desert' | 'mountain' | 'coast';
+  name?: string; // For major cities
 }
 
 @Component({
@@ -34,105 +31,105 @@ interface HexTerritories {
 export class MapComponent implements AfterViewInit {
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
 
-  hexes: HexTerritories = {
-    northYemen: [
-      { r: -4, q: -4 },
-      { r: -4, q: -3 },
-      { r: -4, q: -2 },
-      { r: -4, q: -1 },
-      { r: -4, q: 0 },
+  hexes: GameHex[] = [
+    // North Yemen territories
+    { r: -4, q: -4, owner: 'northYemen' },
+    { r: -4, q: -3, owner: 'northYemen' },
+    { r: -4, q: -2, owner: 'northYemen' },
+    { r: -4, q: -1, owner: 'northYemen' },
+    { r: -4, q: 0, owner: 'northYemen' },
 
-      { r: -3, q: -5 },
-      { r: -3, q: -4 },
-      { r: -3, q: -3 },
-      { r: -3, q: -2 },
-      { r: -3, q: -1 },
+    { r: -3, q: -5, owner: 'northYemen' },
+    { r: -3, q: -4, owner: 'northYemen' },
+    { r: -3, q: -3, owner: 'northYemen' },
+    { r: -3, q: -2, owner: 'northYemen' },
+    { r: -3, q: -1, owner: 'northYemen' },
 
-      { r: -2, q: -5 },
-      { r: -2, q: -4 }, // Sanaa
-      { r: -2, q: -3 },
-      { r: -2, q: -2 }, // Marib
+    { r: -2, q: -5, owner: 'northYemen' },
+    { r: -2, q: -4, owner: 'northYemen', name: 'Sanaa' },
+    { r: -2, q: -3, owner: 'northYemen' },
+    { r: -2, q: -2, owner: 'northYemen', name: 'Marib' },
 
-      { r: -1, q: -6 }, // Hudaydah
-      { r: -1, q: -5 },
-      { r: -1, q: -4 },
-      { r: -1, q: -3 },
+    { r: -1, q: -6, owner: 'northYemen', name: 'Hudaydah' },
+    { r: -1, q: -5, owner: 'northYemen' },
+    { r: -1, q: -4, owner: 'northYemen' },
+    { r: -1, q: -3, owner: 'northYemen' },
 
-      { r: 0, q: -6 },
-      { r: 0, q: -5 }, // Ibb
+    { r: 0, q: -6, owner: 'northYemen' },
+    { r: 0, q: -5, owner: 'northYemen', name: 'Ibb' },
 
-      { r: 1, q: -6 }, // Taizz
-    ],
-    uk: [
-      { r: -6, q: 3 },
-      { r: -6, q: 4 },
-      { r: -6, q: 5 },
-      { r: -6, q: 6 },
-      { r: -6, q: 7 },
+    { r: 1, q: -6, owner: 'northYemen', name: 'Taizz' },
 
-      { r: -5, q: 2 },
-      { r: -5, q: 3 },
-      { r: -5, q: 4 },
-      { r: -5, q: 5 },
-      { r: -5, q: 6 },
-      { r: -5, q: 7 },
+    // UK territories
+    { r: -6, q: 3, owner: 'uk' },
+    { r: -6, q: 4, owner: 'uk' },
+    { r: -6, q: 5, owner: 'uk' },
+    { r: -6, q: 6, owner: 'uk' },
+    { r: -6, q: 7, owner: 'uk' },
 
-      { r: -4, q: 1 },
-      { r: -4, q: 2 },
-      { r: -4, q: 3 },
-      { r: -4, q: 4 },
-      { r: -4, q: 5 },
-      { r: -4, q: 6 },
+    { r: -5, q: 2, owner: 'uk' },
+    { r: -5, q: 3, owner: 'uk' },
+    { r: -5, q: 4, owner: 'uk' },
+    { r: -5, q: 5, owner: 'uk' },
+    { r: -5, q: 6, owner: 'uk' },
+    { r: -5, q: 7, owner: 'uk' },
 
-      { r: -3, q: 0 },
-      { r: -3, q: 1 },
-      { r: -3, q: 2 },
-      { r: -3, q: 3 },
-      { r: -3, q: 4 },
-      { r: -3, q: 5 },
+    { r: -4, q: 1, owner: 'uk' },
+    { r: -4, q: 2, owner: 'uk' },
+    { r: -4, q: 3, owner: 'uk' },
+    { r: -4, q: 4, owner: 'uk' },
+    { r: -4, q: 5, owner: 'uk' },
+    { r: -4, q: 6, owner: 'uk' },
 
-      { r: -2, q: -1 },
-      { r: -2, q: 0 },
-      { r: -2, q: 1 },
-      { r: -2, q: 2 },
-      { r: -2, q: 3 },
-      { r: -2, q: 4 },
+    { r: -3, q: 0, owner: 'uk' },
+    { r: -3, q: 1, owner: 'uk' },
+    { r: -3, q: 2, owner: 'uk' },
+    { r: -3, q: 3, owner: 'uk' },
+    { r: -3, q: 4, owner: 'uk' },
+    { r: -3, q: 5, owner: 'uk' },
 
-      { r: -1, q: -2 },
-      { r: -1, q: -1 },
-      { r: -1, q: 0 },
-      { r: -1, q: 1 },
+    { r: -2, q: -1, owner: 'uk' },
+    { r: -2, q: 0, owner: 'uk' },
+    { r: -2, q: 1, owner: 'uk' },
+    { r: -2, q: 2, owner: 'uk' },
+    { r: -2, q: 3, owner: 'uk' },
+    { r: -2, q: 4, owner: 'uk' },
 
-      { r: 0, q: -4 },
-      { r: 0, q: -3 },
-      { r: 0, q: -2 },
-      { r: 0, q: -1 },
+    { r: -1, q: -2, owner: 'uk' },
+    { r: -1, q: -1, owner: 'uk' },
+    { r: -1, q: 0, owner: 'uk' },
+    { r: -1, q: 1, owner: 'uk' },
 
-      { r: 1, q: -5 },
-      { r: 1, q: -4 },
+    { r: 0, q: -4, owner: 'uk' },
+    { r: 0, q: -3, owner: 'uk' },
+    { r: 0, q: -2, owner: 'uk' },
+    { r: 0, q: -1, owner: 'uk' },
 
-      { r: 2, q: -6 },
-      { r: 2, q: -5 }, // Aden
-    ],
-    saudi: [
-      { r: -8, q: -3 }, // Bisha
+    { r: 1, q: -5, owner: 'uk' },
+    { r: 1, q: -4, owner: 'uk' },
 
-      { r: -7, q: -5 }, // Qunfudhah
-      { r: -7, q: -4 },
-      { r: -7, q: -3 },
+    { r: 2, q: -6, owner: 'uk' },
+    { r: 2, q: -5, owner: 'uk', name: 'Aden' },
 
-      { r: -6, q: -5 },
-      { r: -6, q: -4 }, // Abha
-      { r: -6, q: -3 },
+    // Saudi territories
+    { r: -8, q: -3, owner: 'saudi', name: 'Bisha' },
 
-      { r: -5, q: -5 },
-      { r: -5, q: -4 },
-      { r: -5, q: -3 }, // Najran
-      { r: -5, q: -2 },
+    { r: -7, q: -5, owner: 'saudi', name: 'Qunfudhah' },
+    { r: -7, q: -4, owner: 'saudi' },
+    { r: -7, q: -3, owner: 'saudi' },
 
-      { r: -4, q: -5 }, // Jazan
-    ],
-  };
+    { r: -6, q: -5, owner: 'saudi' },
+    { r: -6, q: -4, owner: 'saudi', name: 'Abha' },
+    { r: -6, q: -3, owner: 'saudi' },
+
+    { r: -5, q: -5, owner: 'saudi' },
+    { r: -5, q: -4, owner: 'saudi' },
+    { r: -5, q: -3, owner: 'saudi', name: 'Najran' },
+    { r: -5, q: -2, owner: 'saudi' },
+
+    { r: -4, q: -5, owner: 'saudi', name: 'Jazan' },
+  ];
+
   hexSize = 14;
   zoom = 1;
   offsetX = 0;
@@ -328,18 +325,14 @@ export class MapComponent implements AfterViewInit {
   }
 
   drawHexes(ctx: CanvasRenderingContext2D) {
-    // Draw hex fills and outlines
-    this.drawTerritoryHexes(ctx, this.hexes.northYemen, 'rgba(0, 0, 255, 0.2)');
-    this.drawTerritoryHexes(ctx, this.hexes.uk, 'rgba(255, 0, 0, 0.2)');
-    this.drawTerritoryHexes(ctx, this.hexes.saudi, 'rgba(255, 255, 0, 0.2)');
-  }
+    const colorMap = {
+      northYemen: 'rgba(0, 0, 255, 0.2)',
+      uk: 'rgba(255, 0, 0, 0.2)',
+      saudi: 'rgba(255, 255, 0, 0.2)',
+      neutral: 'rgba(128, 128, 128, 0.2)',
+    };
 
-  drawTerritoryHexes(
-    ctx: CanvasRenderingContext2D,
-    territory: Hex[],
-    fillColor: string
-  ) {
-    territory.forEach((hex) => {
+    this.hexes.forEach((hex) => {
       const { x, y } = this.hexToPixel(hex.q, hex.r);
 
       ctx.beginPath();
@@ -352,11 +345,8 @@ export class MapComponent implements AfterViewInit {
       }
       ctx.closePath();
 
-      // Fill with territory color
-      ctx.fillStyle = fillColor;
+      ctx.fillStyle = colorMap[hex.owner];
       ctx.fill();
-
-      // Stroke with black outline
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 1;
       ctx.stroke();

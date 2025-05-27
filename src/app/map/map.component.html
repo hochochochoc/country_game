@@ -3,7 +3,7 @@
   <canvas class="w-full h-full cursor-pointer" (click)="onCanvasClick($event)">
   </canvas>
 
-  <!-- Selected hex info
+  <!-- Selected hex info -->
   <div
     *ngIf="selectedHex"
     class="absolute top-2 left-2 bg-white/90 p-2 rounded text-xs max-w-32"
@@ -17,5 +17,5 @@
     <div *ngIf="selectedHex.resources?.length" class="text-green-600 text-xs">
       {{ selectedHex.resources?.join(", ") }}
     </div>
-  </div> -->
+  </div>
 </div>
