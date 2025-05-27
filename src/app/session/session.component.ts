@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { MapComponent } from '../map/map.component';
 import { IssuesComponent } from '../issues/issues.component';
+import { MilComponent } from '../mil/mil.component';
 
 @Component({
   selector: 'app-session',
@@ -18,6 +19,7 @@ import { IssuesComponent } from '../issues/issues.component';
     FontAwesomeModule,
     MapComponent,
     IssuesComponent,
+    MilComponent,
   ],
   templateUrl: './session.component.html',
 })

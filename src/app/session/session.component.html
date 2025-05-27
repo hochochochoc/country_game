@@ -87,6 +87,17 @@
       >
         📋
       </button>
+      <button
+        (click)="setActiveTab('mil')"
+        [class]="
+          activeTab === 'mil'
+            ? 'bg-orange-700 text-white'
+            : 'bg-white text-gray-600'
+        "
+        class="w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm"
+      >
+        ⚔️
+      </button>
     </div>
 
     <!-- Messages tab content -->
@@ -179,6 +190,12 @@
       class="flex-grow flex items-center justify-center"
     >
       <app-issues></app-issues>
+    </div>
+    <div
+      *ngIf="activeTab === 'mil'"
+      class="flex-grow flex items-center justify-center"
+    >
+      <app-mil></app-mil>
     </div>
   </div>
 
