@@ -326,9 +326,9 @@ export class MapComponent implements AfterViewInit {
 
   drawHexes(ctx: CanvasRenderingContext2D) {
     const colorMap = {
-      northYemen: 'rgba(0, 0, 255, 0.2)',
-      uk: 'rgba(255, 0, 0, 0.2)',
-      saudi: 'rgba(255, 255, 0, 0.2)',
+      northYemen: 'rgba(0, 0, 255, 0.07)',
+      uk: 'rgba(255, 0, 0, 0.07)',
+      saudi: 'rgba(255, 255, 0, 0.07)',
       neutral: 'rgba(128, 128, 128, 0.2)',
     };
 
