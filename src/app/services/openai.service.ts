@@ -27,11 +27,18 @@ interface GameState {
     uk: number;
     saudi: number;
   };
+  events?: EventHistoryItem[];
 }
 
 interface CommandHistoryItem {
   command: string;
   result: string;
+  outcome: string;
+}
+
+interface EventHistoryItem {
+  eventId: string;
+  choice: string;
   outcome: string;
 }
 
@@ -103,7 +110,7 @@ export class OpenAIService {
             There should be less permissiveness for social reforms reflecting the traditional, tribal and decentralized society. 
             As stability and authority increase there should be more likelihood of this increasing.
             Diplomacy is a measure of the relationship with other countries, not their strength. It should be used to determine how likely they are to support or oppose the player, if it reaches 0 war is declared. 
-            Note that if it's not implicit, stat changes in diplomacy, military and stability should not be applied randomly, especially if outcomes are ambiguous or hint at future but not immediate success.
+            Note that if it's not implicit, stat changes in diplomacy, military and stability should not be applied randomly, especially if outcomes are ambiguous or hint at future but not immediate success. No increase or decrease in saudi diplo if the command is not directly related to them, for example.
             An excellent outcome should be more than just the success of the command but something extra.
 
             Don't give negative likelihoods to commands simply because they are unethical or tyrannical, keep your evaluation neutral and objective and based on the historical context and game state. 

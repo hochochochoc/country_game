@@ -9,6 +9,9 @@ import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { MapComponent } from '../map/map.component';
 import { IssuesComponent } from '../issues/issues.component';
 import { MilComponent } from '../mil/mil.component';
+import { EventService } from '../services/event.service';
+import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+import { GameEvent, EventOption } from '../models/event.model';
 
 @Component({
   selector: 'app-session',
@@ -20,6 +23,7 @@ import { MilComponent } from '../mil/mil.component';
     MapComponent,
     IssuesComponent,
     MilComponent,
+    EventDialogComponent,
   ],
   templateUrl: './session.component.html',
 })
@@ -29,12 +33,15 @@ export class SessionComponent implements OnInit {
   gameState: any = null;
   command: string = '';
   isProcessing: boolean = false;
-  activeTab: string = 'map';
+  activeTab: string = 'messages';
+  currentEvent: GameEvent | null = null;
+  eventProcessed: boolean = false;
 
   constructor(
     private router: Router,
     private firebaseService: FirebaseService,
-    private openAIService: OpenAIService
+    private openAIService: OpenAIService,
+    private eventService: EventService
   ) {}
 
   async ngOnInit() {
@@ -52,6 +59,45 @@ export class SessionComponent implements OnInit {
     } else {
       console.error('No game ID found');
       this.goToMenu(); // Redirect back to menu
+    }
+  }
+
+  checkForEvents() {
+    if (!this.gameState || this.eventProcessed) return;
+
+    // Check if we already processed events for this round
+    const currentRoundEvents = this.gameState.events || [];
+    const event = this.eventService.getEventForRound(
+      this.gameState.currentRound
+    );
+
+    if (event && !currentRoundEvents.some((e: any) => e.eventId === event.id)) {
+      this.currentEvent = event;
+    }
+  }
+
+  async handleEventSelection(option: EventOption) {
+    if (!this.currentEvent) return;
+
+    try {
+      // Process the event in Firebase
+      await this.firebaseService.processEvent(
+        this.gameId,
+        this.currentEvent.id,
+        option
+      );
+
+      // Refresh game state
+      this.gameState = await this.firebaseService.getGameState(this.gameId);
+
+      // Clear the event
+      this.currentEvent = null;
+      this.eventProcessed = true;
+
+      // Switch to messages tab to show the outcome
+      this.activeTab = 'messages';
+    } catch (error) {
+      console.error('Error processing event:', error);
     }
   }
 
@@ -147,10 +193,21 @@ export class SessionComponent implements OnInit {
     try {
       await this.firebaseService.nextTurn(this.gameId);
       this.gameState = await this.firebaseService.getGameState(this.gameId);
+      this.eventProcessed = false; // Reset for new round
       console.log('Advanced to next turn:', this.gameState);
+
+      // Check for events in the new round
+      this.checkForEvents();
     } catch (error) {
       console.error('Failed to advance turn');
     }
+  }
+
+  getLastEvent(): any {
+    if (!this.gameState?.events || this.gameState.events.length === 0) {
+      return null;
+    }
+    return this.gameState.events[this.gameState.events.length - 1];
   }
 
   goToMenu() {

@@ -275,9 +275,84 @@ export class FirebaseService {
         military: gameData.military,
         diplomacy: gameData.diplomacy,
         commands: [],
+        events: [],
       });
     } catch (error) {
       console.error('Error advancing turn:', error);
+      throw error;
+    }
+  }
+
+  async processEvent(
+    gameId: string,
+    eventId: string,
+    selectedOption: any
+  ): Promise<void> {
+    try {
+      const gameData = await this.getGameState(gameId);
+      const currentRound = gameData['currentRound'];
+
+      // Get current round reference
+      const roundRef = doc(this.db, `games/${gameId}/rounds/${currentRound}`);
+
+      // Calculate updated values
+      const updatedEconomy =
+        selectedOption.changes?.economy !== undefined
+          ? gameData.economy + selectedOption.changes.economy
+          : gameData.economy;
+
+      const updatedStability =
+        selectedOption.changes?.stability !== undefined
+          ? gameData.stability + selectedOption.changes.stability
+          : gameData.stability;
+
+      const updatedMilitary =
+        selectedOption.changes?.military !== undefined
+          ? gameData.military + selectedOption.changes.military
+          : gameData.military;
+
+      // Calculate updated diplomacy values
+      const updatedDiplomacy = {
+        italy:
+          selectedOption.changes?.diplomacy?.italy !== undefined
+            ? gameData.diplomacy.italy + selectedOption.changes.diplomacy.italy
+            : gameData.diplomacy.italy,
+        uk:
+          selectedOption.changes?.diplomacy?.uk !== undefined
+            ? gameData.diplomacy.uk + selectedOption.changes.diplomacy.uk
+            : gameData.diplomacy.uk,
+        saudi:
+          selectedOption.changes?.diplomacy?.saudi !== undefined
+            ? gameData.diplomacy.saudi + selectedOption.changes.diplomacy.saudi
+            : gameData.diplomacy.saudi,
+      };
+
+      // Add event to history
+      const eventData = {
+        eventId,
+        choice: selectedOption.text,
+        outcome: selectedOption.outcome,
+        changes: selectedOption.changes || {},
+        timestamp: new Date(),
+      };
+
+      const events = gameData.events || [];
+      events.push(eventData);
+
+      // Update round document
+      await setDoc(
+        roundRef,
+        {
+          events,
+          economy: updatedEconomy,
+          stability: updatedStability,
+          military: updatedMilitary,
+          diplomacy: updatedDiplomacy,
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error('Error processing event:', error);
       throw error;
     }
   }

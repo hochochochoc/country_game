@@ -1,4 +1,10 @@
 <div class="min-h-screen bg-orange-50 flex flex-col z-40 items-center p-4">
+  <app-event-dialog
+    *ngIf="currentEvent"
+    [event]="currentEvent"
+    (optionSelected)="handleEventSelection($event)"
+  ></app-event-dialog>
+
   <div class="flex flex-row space-x-6 items-center">
     <div class="bg-white border-gray-300 p-2 rounded-xl shadow-xs">
       <p>{{ gameState?.pa || 0 }} PA</p>
@@ -101,80 +107,170 @@
     </div>
 
     <!-- Messages tab content -->
-    <div *ngIf="activeTab === 'messages' && getLastCommand()" class="flex-grow">
-      <p class="font-bold mb-2">
-        {{ getLastCommand()?.result }}
-      </p>
-      <p class="mb-4">{{ getLastCommand()?.outcome }}</p>
+    <div *ngIf="activeTab === 'messages'" class="flex-grow">
+      <!-- Show last event if it's more recent than last command -->
+      <div
+        *ngIf="
+          getLastEvent() &&
+          (!getLastCommand() ||
+            getLastEvent().timestamp > getLastCommand().timestamp)
+        "
+      >
+        <p class="font-bold mb-2 text-orange-800">Event Outcome</p>
+        <p class="mb-4">{{ getLastEvent()?.outcome }}</p>
 
-      <div class="text-sm">
-        <p
-          *ngIf="getLastCommand()?.changes?.economy"
-          [ngClass]="
-            getLastCommand()?.changes?.economy > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.economy > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.economy }} Economy
-        </p>
-        <p
-          *ngIf="getLastCommand()?.changes?.stability"
-          [ngClass]="
-            getLastCommand()?.changes?.stability > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.stability > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.stability }} Stability
-        </p>
-        <p
-          *ngIf="getLastCommand()?.changes?.military"
-          [ngClass]="
-            getLastCommand()?.changes?.military > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.military > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.military }} Military
-        </p>
+        <div class="text-sm">
+          <p
+            *ngIf="getLastEvent()?.changes?.economy"
+            [ngClass]="
+              getLastEvent()?.changes?.economy > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.economy > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.economy }} Economy
+          </p>
+          <p
+            *ngIf="getLastEvent()?.changes?.stability"
+            [ngClass]="
+              getLastEvent()?.changes?.stability > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.stability > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.stability }} Stability
+          </p>
+          <p
+            *ngIf="getLastEvent()?.changes?.military"
+            [ngClass]="
+              getLastEvent()?.changes?.military > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.military > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.military }} Military
+          </p>
+          <p
+            *ngIf="getLastEvent()?.changes?.diplomacy?.italy"
+            [ngClass]="
+              getLastEvent()?.changes?.diplomacy?.italy > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.diplomacy?.italy > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.diplomacy?.italy }} Italy
+          </p>
+          <p
+            *ngIf="getLastEvent()?.changes?.diplomacy?.uk"
+            [ngClass]="
+              getLastEvent()?.changes?.diplomacy?.uk > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.diplomacy?.uk > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.diplomacy?.uk }} UK
+          </p>
+          <p
+            *ngIf="getLastEvent()?.changes?.diplomacy?.saudi"
+            [ngClass]="
+              getLastEvent()?.changes?.diplomacy?.saudi > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastEvent()?.changes?.diplomacy?.saudi > 0 ? "+" : ""
+            }}{{ getLastEvent()?.changes?.diplomacy?.saudi }} Saudi
+          </p>
+        </div>
+      </div>
 
-        <p
-          *ngIf="getLastCommand()?.changes?.diplomacy?.italy"
-          [ngClass]="
-            getLastCommand()?.changes?.diplomacy?.italy > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.diplomacy?.italy > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.diplomacy?.italy }} Italy
+      <!-- Show last command if it's more recent than last event -->
+      <div
+        *ngIf="
+          getLastCommand() &&
+          (!getLastEvent() ||
+            getLastCommand().timestamp > getLastEvent().timestamp)
+        "
+      >
+        <p class="font-bold mb-2">
+          {{ getLastCommand()?.result }}
         </p>
-        <p
-          *ngIf="getLastCommand()?.changes?.diplomacy?.uk"
-          [ngClass]="
-            getLastCommand()?.changes?.diplomacy?.uk > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.diplomacy?.uk > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.diplomacy?.uk }} UK
-        </p>
-        <p
-          *ngIf="getLastCommand()?.changes?.diplomacy?.saudi"
-          [ngClass]="
-            getLastCommand()?.changes?.diplomacy?.saudi > 0
-              ? 'text-green-600'
-              : 'text-red-600'
-          "
-        >
-          {{ getLastCommand()?.changes?.diplomacy?.saudi > 0 ? "+" : ""
-          }}{{ getLastCommand()?.changes?.diplomacy?.saudi }} Saudi
-        </p>
+        <p class="mb-4">{{ getLastCommand()?.outcome }}</p>
+
+        <div class="text-sm">
+          <p
+            *ngIf="getLastCommand()?.changes?.economy"
+            [ngClass]="
+              getLastCommand()?.changes?.economy > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.economy > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.economy }} Economy
+          </p>
+          <p
+            *ngIf="getLastCommand()?.changes?.stability"
+            [ngClass]="
+              getLastCommand()?.changes?.stability > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.stability > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.stability }} Stability
+          </p>
+          <p
+            *ngIf="getLastCommand()?.changes?.military"
+            [ngClass]="
+              getLastCommand()?.changes?.military > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.military > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.military }} Military
+          </p>
+
+          <p
+            *ngIf="getLastCommand()?.changes?.diplomacy?.italy"
+            [ngClass]="
+              getLastCommand()?.changes?.diplomacy?.italy > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.diplomacy?.italy > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.diplomacy?.italy }} Italy
+          </p>
+          <p
+            *ngIf="getLastCommand()?.changes?.diplomacy?.uk"
+            [ngClass]="
+              getLastCommand()?.changes?.diplomacy?.uk > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.diplomacy?.uk > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.diplomacy?.uk }} UK
+          </p>
+          <p
+            *ngIf="getLastCommand()?.changes?.diplomacy?.saudi"
+            [ngClass]="
+              getLastCommand()?.changes?.diplomacy?.saudi > 0
+                ? 'text-green-600'
+                : 'text-red-600'
+            "
+          >
+            {{ getLastCommand()?.changes?.diplomacy?.saudi > 0 ? "+" : ""
+            }}{{ getLastCommand()?.changes?.diplomacy?.saudi }} Saudi
+          </p>
+        </div>
       </div>
     </div>
 

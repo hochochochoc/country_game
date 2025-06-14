@@ -45,7 +45,7 @@ export class MapComponent implements AfterViewInit {
     { r: -3, q: -2, owner: 'northYemen' },
     { r: -3, q: -1, owner: 'northYemen' },
 
-    { r: -2, q: -6, owner: 'northYemen' },
+    { r: -2, q: -6, owner: 'uk', name: 'Kamaran' },
     { r: -2, q: -5, owner: 'northYemen' },
     { r: -2, q: -4, owner: 'northYemen', name: 'Sanaa' },
     { r: -2, q: -3, owner: 'northYemen' },
@@ -59,6 +59,7 @@ export class MapComponent implements AfterViewInit {
     { r: 0, q: -6, owner: 'northYemen' },
     { r: 0, q: -5, owner: 'northYemen', name: 'Ibb' },
 
+    { r: 1, q: -7, owner: 'northYemen', name: 'Mocha' },
     { r: 1, q: -6, owner: 'northYemen', name: 'Taizz' },
 
     // UK territories
@@ -330,7 +331,7 @@ export class MapComponent implements AfterViewInit {
     const colorMap = {
       northYemen: 'rgba(0, 0, 255, 0.07)',
       uk: 'rgba(255, 0, 0, 0.07)',
-      saudi: 'rgba(255, 255, 0, 0.07)',
+      saudi: 'rgba(0, 255, 72, 0.07)',
       neutral: 'rgba(128, 128, 128, 0.2)',
     };
 
